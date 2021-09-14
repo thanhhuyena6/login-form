@@ -24,7 +24,6 @@ export class HomeComponent implements OnInit {
     this.arrayUser.forEach((element : any) => {
       if (element.id === this.userId) {
         this.user = element;
-        console.log(this.user)
       }
     })
   }
