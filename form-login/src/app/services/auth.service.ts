@@ -12,4 +12,8 @@ export class AuthService {
   login(): Observable<any> {
     return of(users)
   }
+
+  isLoggedIn() {
+    return !!localStorage.getItem('user');
+  }
 }
