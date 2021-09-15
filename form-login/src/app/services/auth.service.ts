@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {users} from "../mock-user";
 import {Observable, of} from "rxjs";
+import {Router} from "@angular/router";
 
 @Injectable({
   providedIn: 'root'
@@ -8,8 +9,10 @@ import {Observable, of} from "rxjs";
 export class AuthService {
   arrayUser = users;
   userId: any;
+  index: number = -1;
+  isSubmit: boolean = true;
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   login(): Observable<any> {
     return of(users)
@@ -17,6 +20,19 @@ export class AuthService {
 
   isLoggedIn() {
     return !!localStorage.getItem('user');
+  }
+
+  userLogin(value:any) {
+    this.arrayUser.forEach((user: any) => {
+        if (user.email == value.email &&  user.password == value.password) {
+          localStorage.setItem('user', JSON.stringify(user.id));
+          this.index = 1;
+          this.router.navigate(['/home'])
+        }
+    })
+    if (this.index !== 1) {
+      this.isSubmit = false;
+    }
   }
 
   getUser(){
