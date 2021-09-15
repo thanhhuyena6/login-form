@@ -6,6 +6,8 @@ import {Observable, of} from "rxjs";
   providedIn: 'root'
 })
 export class AuthService {
+  arrayUser = users;
+  userId: any;
 
   constructor() { }
 
@@ -16,4 +18,17 @@ export class AuthService {
   isLoggedIn() {
     return !!localStorage.getItem('user');
   }
+
+  getUser(){
+    let user = {};
+    this.userId = localStorage.getItem('user');
+    this.userId = JSON.parse(this.userId)
+    this.arrayUser.forEach((element : any) => {
+      if (element.id === this.userId) {
+        user = element;
+      }
+    })
+    return user
+  }
+
 }

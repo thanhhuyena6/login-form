@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {users} from "../mock-user";
-import {element} from "protractor";
+import {AuthService} from "../services/auth.service";
 
 @Component({
   selector: 'app-home',
@@ -8,24 +7,13 @@ import {element} from "protractor";
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  arrayUser = users;
-  userId: any;
   user: any;
 
-  constructor() { }
+
+  constructor(private authService: AuthService) { }
 
   ngOnInit(): void {
-    this.userId = localStorage.getItem('user');
-    this.userId = JSON.parse(this.userId)
-    this.renderUser();
-  }
-
-  renderUser() {
-    this.arrayUser.forEach((element : any) => {
-      if (element.id === this.userId) {
-        this.user = element;
-      }
-    })
+    this.user = this.authService.getUser();
   }
 
 }

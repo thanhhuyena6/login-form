@@ -1,6 +1,9 @@
 <div class="login">
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <formly-form [form]="form" [fields]="fields" [model]="model" [options]="options"></formly-form>
+    <div *ngIf="!isSubmit" class="alert alert-danger">
+      email or password does not exist
+    </div>
     <button type="submit" class="btn btn-primary submit-button">Submit</button>
   </form>
 </div>

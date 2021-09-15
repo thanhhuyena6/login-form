@@ -17,8 +17,8 @@ export class LoginComponent implements OnInit {
   fields: FormlyFieldConfig[] = [];
   options: FormlyFormOptions = {};
   arrayUser = [];
-  isSubmit: boolean = true;
   index: number = -1;
+  isSubmit: boolean = true;
 
 
   constructor(private router: Router, private authService: AuthService) { }
@@ -32,8 +32,14 @@ export class LoginComponent implements OnInit {
         templateOptions: {
           required: true,
           placeholder: 'email',
-          label: 'Email address'
-        }
+          label: 'Email address',
+          pattern: "[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}$",
+        },
+        validation: {
+            messages: {
+              pattern: (error, field: FormlyFieldConfig) => `"${field.formControl?.value}" Email must be a valid email address`
+            },
+          }
       },
       // password
       {
@@ -45,6 +51,11 @@ export class LoginComponent implements OnInit {
           placeholder: 'password',
           passwordVisible: false,
           label: 'Password',
+        },
+        validation: {
+          messages: {
+            required: 'Password cant be plank!'
+          }
         }
       }
     ]
@@ -53,17 +64,18 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     this.authService.login().pipe(
       untilDestroyed(this)
-    ).subscribe((resp: any) => {this.arrayUser = resp;})
+    ).subscribe((resp: any) => this.arrayUser = resp)
     this.arrayUser.forEach((user: any) => {
-      if (user.email == this.form.value.email &&  user.password == this.form.value.password) {
-        localStorage.setItem('user', JSON.stringify(user.id));
-        this.index = 1;
-        this.router.navigate(['/home'])
-      }
+        if (user.email == this.form.value.email &&  user.password == this.form.value.password) {
+          localStorage.setItem('user', JSON.stringify(user.id));
+          this.index = 1;
+          this.router.navigate(['/home'])
+        }
     })
     if (this.index !== 1) {
-      alert('email or password does not exist')
+      this.isSubmit = false;
     }
+
   }
 
 }
