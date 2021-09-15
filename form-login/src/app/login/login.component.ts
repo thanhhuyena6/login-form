@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {FormGroup} from "@angular/forms";
 import {FormlyFieldConfig, FormlyFormOptions} from "@ngx-formly/core";
-import {Router} from "@angular/router";
 import {AuthService} from "../services/auth.service";
 import {UntilDestroy, untilDestroyed} from '@ngneat/until-destroy';
 
@@ -16,12 +15,10 @@ export class LoginComponent implements OnInit {
   model : any;
   fields: FormlyFieldConfig[] = [];
   options: FormlyFormOptions = {};
-  arrayUser = [];
-  index: number = -1;
   isSubmit: boolean = true;
 
 
-  constructor(private router: Router, private authService: AuthService) { }
+  constructor(private authService: AuthService) { }
 
   ngOnInit(): void {
     this.fields = [
@@ -37,6 +34,7 @@ export class LoginComponent implements OnInit {
         },
         validation: {
             messages: {
+              required: 'Email cant be plank!',
               pattern: (error, field: FormlyFieldConfig) => `"${field.formControl?.value}" Email must be a valid email address`
             },
           }
@@ -64,17 +62,10 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     this.authService.login().pipe(
       untilDestroyed(this)
-    ).subscribe((resp: any) => this.arrayUser = resp)
-    this.arrayUser.forEach((user: any) => {
-        if (user.email == this.form.value.email &&  user.password == this.form.value.password) {
-          localStorage.setItem('user', JSON.stringify(user.id));
-          this.index = 1;
-          this.router.navigate(['/home'])
-        }
+    ).subscribe((resp: any) => {
+      this.authService.userLogin(this.form.value);
+      this.isSubmit = this.authService.isSubmit
     })
-    if (this.index !== 1) {
-      this.isSubmit = false;
-    }
 
   }
 
